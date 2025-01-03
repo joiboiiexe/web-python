@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Images</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Images</h1>
+        <form action="/" method="POST" enctype="multipart/form-data">
+            <input type="file" name="images" multiple required>
+            <button type="submit">Upload</button>
+        </form>
+        {% if image_urls %}
+        <div class="gallery">
+            <h2>Uploaded Images</h2>
+            {% for url in image_urls %}
+                <img src="{{ url }}" alt="Uploaded Image" style="max-width: 100%; margin: 10px;">
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
