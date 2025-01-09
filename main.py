@@ -1,65 +1,60 @@
-from flask import Flask, render_template, request, jsonify
+import os
 import firebase_admin
 from firebase_admin import credentials, db
+from flask import Flask, render_template, request, jsonify
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Firebase initialization
-cred = credentials.Certificate('firebase.json')  # Path to your Firebase service account key
+# Initialize Firebase
+cred = credentials.Certificate("firebase.json")  # Path to your firebase.json
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://joyboy-exe-default-rtdb.firebaseio.com/'
+    'databaseURL': 'https://joyboy-exe-default-rtdb.firebaseio.com'
 })
 
-@app.route('/')
-def index():
-    """
-    Render the chat interface.
-    """
-    return render_template('index.html')
+# Firebase reference for chat messages
+ref = db.reference('chat')
 
-@app.route('/send-message', methods=['POST'])
-def send_message():
-    """
-    Handle user's message and insert both user and bot responses into Firebase.
-    """
-    data = request.json
-    user_message = data.get('message')
+# Function to retrieve chat messages from Firebase
+def get_chat_messages():
+    messages = ref.get()
+    if messages is None:
+        return []  # Return an empty list if no messages are found
+    return list(messages.values())  # Convert dict to list of messages
 
-    if not user_message:
-        return jsonify({'error': 'No message provided'}), 400
+# Route for User I
+@app.route("/useri")
+def useri():
+    messages = get_chat_messages()
+    return render_template("useri.html", messages=messages)
 
-    # Generate bot reply instantly
-    bot_reply = f"Bot says: I received your message: '{user_message}'"
+# Route for User II
+@app.route("/userii")
+def userii():
+    messages = get_chat_messages()
+    return render_template("userii.html", messages=messages)
 
-    # Return bot reply immediately
-    response = {
-        'status': 'success',
-        'bot_reply': bot_reply
-    }
-
-    # Insert user and bot messages into Firebase in the background
-    user_ref = db.reference('messages').push()
-    user_ref.set({
-        'message': user_message,
-        'from': 'user'
-    })
-
-    bot_ref = db.reference('messages').push()
-    bot_ref.set({
-        'message': bot_reply,
-        'from': 'bot'
-    })
-
-    return jsonify(response), 200
-
-@app.route('/get-messages', methods=['GET'])
+# API endpoint to fetch latest chat messages in JSON
+@app.route("/get_messages", methods=["GET"])
 def get_messages():
-    """
-    Fetch all messages from Firebase to display on page load.
-    """
-    messages = db.reference('messages').order_by_key().get()
+    messages = get_chat_messages()
     return jsonify(messages)
 
-if __name__ == '__main__':
+# API endpoint to send a message
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    message = request.form.get("message")
+    user = request.form.get("user")
+
+    if message and user:
+        # Add message to Firebase
+        ref.push({
+            'user': user,
+            'message': message
+        })
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 400
+
+# Run Flask app
+if __name__ == "__main__":
     app.run(debug=True)
