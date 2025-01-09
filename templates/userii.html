@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User II Chat</title>
+    <style>
+        /* Simple styling */
+        .chat-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 5px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Box - User II</h1>
+    <div class="chat-container" id="chat-container">
+        {% for message in messages %}
+            <div class="message">
+                <strong>{{ message['user'] }}:</strong> {{ message['message'] }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <input type="text" id="message-input" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        // Function to send a new message via AJAX and update the chat box immediately
+        function sendMessage() {
+            const message = document.getElementById("message-input").value;
+            const user = "User II";  // Replace with actual user info if needed
+            if (message.trim() !== "") {
+                // Show message immediately in the chat box
+                const chatContainer = document.getElementById("chat-container");
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("message");
+                messageElement.innerHTML = `<strong>${user}:</strong> ${message}`;
+                chatContainer.appendChild(messageElement);
+                
+                // Scroll to the bottom to show the latest message
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // Now send the message to the server (Firebase)
+                fetch("/send_message", {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        message: message,
+                        user: user
+                    }),
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        document.getElementById("message-input").value = ""; // Clear input
+                    }
+                });
+            }
+        }
+
+        // Function to load messages from the server (AJAX) when page loads
+        function loadMessages() {
+            fetch("/get_messages")
+                .then(response => response.json())
+                .then(data => {
+                    const chatContainer = document.getElementById("chat-container");
+                    chatContainer.innerHTML = "";  // Clear the chat box
+                    data.forEach(message => {
+                        const messageElement = document.createElement("div");
+                        messageElement.classList.add("message");
+                        messageElement.innerHTML = `<strong>${message.user}:</strong> ${message.message}`;
+                        chatContainer.appendChild(messageElement);
+                    });
+                    chatContainer.scrollTop = chatContainer.scrollHeight;  // Scroll to bottom
+                });
+        }
+
+        // Refresh messages every 2 seconds
+        setInterval(loadMessages, 2000);
+
+        // Initial load of messages
+        loadMessages();
+    </script>
+</body>
+</html>
