@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "joyboy-exe",
+  "private_key_id": "408fb7e5da58223263839bc59a70fc9a7edcb44d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDWze06sbKJizIy\njVsu8XTGxBcqLk6d+jwXfo/I52MHKCK+8xa1Xswm+oirBRLpvjP4AxtsnGYFTXh8\naku5YcfWq7zF9Tvbp/MpjaKvUAaIkM7BiEYCSm/XAaTdlFfhNGW7TM6GYWVAyJ6u\nM9yE3ovFuzjorZVf2CGsnyeXHV/g31TXtj8b2XLlkmwq7PCxZQgQKxICmAsJr6O7\nniSAwa05l9SdlYNFL5l46iq7psfEFhTn4A8+Z8J5d1GUgGqXit3ykYiBGEiqwrbq\ndXD0hPknIVZdAQd6d7ljO8G8b2evi63VFbcx3YgoEEmjIeR+p2Guc9E+f35aELft\nZqlx1otvAgMBAAECggEAZ51r6p0e7yQa8bGoI2vLlbmvJuSxfZjgdcDSIOokpaYh\npJRkBtcUiVTeqghHiEL8lI0DJJAI0lP9Y55uqpzVJeMvqxnRZvKL5CZzLDfg/u1D\nHq3af25ipocffNb60SJSVFgHY2EF04syp/tSSzGCoL3gBLT+0f3SuI8JLOa5giG2\nZ8h3LRd4ueZQcL+1OouBXWrNAEPvfn7GZiOLtOF1BA5DDgRAKGxtU6oP/Eo4Lnn9\npGK87DNGlz16gBoZ20i7Y9sK+aCwTVgsxK8qGzGJ4GLULw9xnhn0cTHO5oAnaEIm\n3y/y/HYRV2+kfeZJWV25IFoY+DZWGFBSXYzrduXc2QKBgQDvDyho8d+jzwkMOWlA\nqVw9ptvpcXo6cSEvLVopMzAngkGHRPqyLtjcyj2atEXxwK9dmkEbhIv5afwC74cv\nRnSUZfkRuATqIvRaRl1xTmBq49gLoFIO0SHbv049FxxqeErTYNMbc4I8+JAYRp4h\n1DFJn584EMUDtvAY56L5XvTBiwKBgQDmBsFdM1sn2sYGiq1y5/f65wUsHw69CTJR\nXvMkJ1QkDQkJ8dsOZjyEmGS8nPpUGcAJCFkc67MgmmKNzbnAmPe4YYDBLxBTM4LG\nXFSUuqQ8OzsyaWhHauVM0uK9MPCyd/OIgBOXIe2qW0MaQv3mSIxwtqiI7oFgxnaj\n2ZRrhrZSLQKBgQCfzy9BcKgDVq0CugJtkooyQLB0T0LZfLUlV5kVP73qO35Y0jkR\nEpYwixZBrE+xvBC/bxYlMidslXg98igZ52yZo82sFatbZgCZtL5Ut4NnEWdk5kjU\n1ONghnPkDOYXGtFSm0Ck8kPXRIb3Y4XksXg9cnK6xSMfR5Ub4QWm1N6j3wKBgQDD\nx9QkY2WeklIhlz7xogYqgx6f4v9EXeN55nrDtsWiuYWL9VIg+1te7+Ytst5NXm1Y\nQsa2GtanVT+0ufjzuD5/rF1OD6SxbBJOip9ix0iqCy/jRFwBDTaFIKjjphf3jqi0\n8W27IKGMcYi3fXVk3zLJbG4dvgJYQBMSekodCtd7MQKBgQDst/M8vV70spq8lmHj\nH9bS4UV93s89ySMpyyu9HDSzBsFiJNWnxIoaGsUWFigm5rQkCRczQtaz0MuzkyIC\npIZYSxhgYaqzI6gO6GHw9RTt1TDj91ef5e2nZHhNysah1Tns5AYKZZFItZMvKSDi\nZ6kJSvNSwgN/ZZWSSZgKNfjPYg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-tcx9i@joyboy-exe.iam.gserviceaccount.com",
+  "client_id": "107217122391108340904",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-tcx9i%40joyboy-exe.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
