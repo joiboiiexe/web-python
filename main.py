@@ -1,60 +1,42 @@
-import os
-import firebase_admin
-from firebase_admin import credentials, db
 from flask import Flask, render_template, request, jsonify
+import cloudinary
+import cloudinary.uploader
+import os
 
-# Initialize Flask app
+# Configure Cloudinary credentials
+cloudinary.config(
+    cloud_name="dzv3xgdso",
+    api_key="995211288265947",
+    api_secret="0bJX7uz7v58psFHaP3qT6pukUyQ"
+)
+
 app = Flask(__name__)
 
-# Initialize Firebase
-cred = credentials.Certificate("firebase.json")  # Path to your firebase.json
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://joyboy-exe-default-rtdb.firebaseio.com'
-})
+# Route to render the index page
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-# Firebase reference for chat messages
-ref = db.reference('chat')
-
-# Function to retrieve chat messages from Firebase
-def get_chat_messages():
-    messages = ref.get()
-    if messages is None:
-        return []  # Return an empty list if no messages are found
-    return list(messages.values())  # Convert dict to list of messages
-
-# Route for User I
-@app.route("/useri")
-def useri():
-    messages = get_chat_messages()
-    return render_template("useri.html", messages=messages)
-
-# Route for User II
-@app.route("/userii")
-def userii():
-    messages = get_chat_messages()
-    return render_template("userii.html", messages=messages)
-
-# API endpoint to fetch latest chat messages in JSON
-@app.route("/get_messages", methods=["GET"])
-def get_messages():
-    messages = get_chat_messages()
-    return jsonify(messages)
-
-# API endpoint to send a message
-@app.route("/send_message", methods=["POST"])
-def send_message():
-    message = request.form.get("message")
-    user = request.form.get("user")
-
-    if message and user:
-        # Add message to Firebase
-        ref.push({
-            'user': user,
-            'message': message
+# Route to handle the image upload
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    try:
+        # Get the image URL sent from the frontend
+        image_url = request.json['imageUrl']
+        
+        # Upload to Cloudinary
+        response = cloudinary.uploader.upload(image_url, folder="media", use_filename=True, unique_filename=False, upload_preset="joyboy")
+        
+        # Extract the URL from Cloudinary response
+        cloudinary_url = response.get('url')
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Image uploaded successfully!',
+            'imageUrl': cloudinary_url
         })
-        return jsonify({"status": "success"})
-    return jsonify({"status": "error"}), 400
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
 
-# Run Flask app
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
