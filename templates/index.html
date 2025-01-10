@@ -3,133 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>Image Upload to Cloudinary</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .chat-container {
-            width: 50%;
-            margin: 50px auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            height: 70vh;
-            overflow-y: auto;
-        }
-        .chat-bubble {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 10px;
-            max-width: 60%;
-        }
-        .user-bubble {
-            background-color: #0084ff;
-            color: white;
-            float: right;
-            clear: both;
-        }
-        .bot-bubble {
-            background-color: #e5e5ea;
-            color: black;
-            float: left;
-            clear: both;
-        }
-        .chat-input-container {
-            margin: 10px auto;
-            width: 50%;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
         }
-        .chat-input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
-        .chat-button {
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: block;
+            margin: 20px auto;
             padding: 10px;
-            font-size: 16px;
-            background-color: #0084ff;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            display: none;
+            max-width: 100%;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
-            margin-left: 5px;
             cursor: pointer;
+        }
+
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007BFF;
         }
     </style>
 </head>
 <body>
-    <div class="chat-container" id="chat-box"></div>
-    <div class="chat-input-container">
-        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message...">
-        <button id="send-button" class="chat-button">Send</button>
+    <div class="container">
+        <h1>Upload Image to Cloudinary</h1>
+        <input type="file" class="file-input" id="imageInput" accept="image/*">
+        <img id="imagePreview" class="image-preview" alt="Image Preview">
+        <button class="upload-btn" id="uploadButton" disabled>Upload Image</button>
+        <div class="message" id="message"></div>
+        <a id="imageLink" class="link" href="#" target="_blank" style="display: none;">View Uploaded Image</a>
     </div>
 
     <script>
-        const chatBox = document.getElementById('chat-box');
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadButton = document.getElementById('uploadButton');
+        const messageDiv = document.getElementById('message');
+        const imageLink = document.getElementById('imageLink');
 
-        // Function to append messages to the chat UI
-        function appendMessage(message, sender) {
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${sender === 'user' ? 'user-bubble' : 'bot-bubble'}`;
-            bubble.textContent = message;
-            chatBox.appendChild(bubble);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // Function to fetch messages from Firebase on page load
-        async function fetchMessages() {
-            const response = await fetch('/get-messages');
-            const messages = await response.json();
-
-            // Clear existing messages
-            chatBox.innerHTML = '';
-
-            // Display all messages
-            for (const [id, messageData] of Object.entries(messages)) {
-                appendMessage(messageData.message, messageData.from);
+        // Display image preview when user selects an image
+        imageInput.addEventListener('change', function() {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadButton.disabled = false;
+                };
+                reader.readAsDataURL(file);
             }
-        }
-
-        // Function to handle sending a message
-        async function sendMessage() {
-            const userMessage = chatInput.value.trim();
-            if (!userMessage) return;
-
-            // Instantly display the user's message
-            appendMessage(userMessage, 'user');
-
-            // Clear input field
-            chatInput.value = '';
-
-            // Send the message to the backend
-            const response = await fetch('/send-message', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage })
-            });
-
-            const data = await response.json();
-
-            // Instantly display the bot's reply
-            if (data.bot_reply) {
-                appendMessage(data.bot_reply, 'bot');
-            }
-        }
-
-        // Event listeners
-        sendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
         });
 
-        // Fetch messages on page load
-        fetchMessages();
+        // Upload the image to the backend (Cloudinary) when the button is clicked
+        uploadButton.addEventListener('click', async function() {
+            const file = imageInput.files[0];
+            if (!file) {
+                return;
+            }
+
+            // Upload the image to Cloudinary using the FileReader data
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'joyboy');
+
+            try {
+                messageDiv.textContent = 'Uploading...';
+                const response = await fetch('http://localhost:5000/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        imageUrl: imagePreview.src
+                    })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    messageDiv.textContent = data.message;
+                    imageLink.style.display = 'inline';
+                    imageLink.href = data.imageUrl;
+                    imageLink.textContent = 'Click here to view your uploaded image';
+                } else {
+                    messageDiv.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Error uploading image.';
+                console.error('Error uploading image:', error);
+            }
+        });
     </script>
 </body>
 </html>
